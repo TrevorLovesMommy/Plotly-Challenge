@@ -38,11 +38,6 @@ d3.json("samples.json").then((data) =>{
         });
 
     //------------- get demographic info and populate Demographic Info Table ---------------------
-    
-    // get the all metadata
-    var meta = data.metadata;
-    console.log("here are all the meta data");
-    console.log(meta);
 
     //Use D3 to create an event handler
     //question for justin - do I haveto create thsi event handler.  
