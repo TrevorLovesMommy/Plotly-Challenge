@@ -1,10 +1,10 @@
-/* note to self - to run this code on your laptop, set up your local http server
+/* Note to self - to run this code on your laptop, set up your local http server
 through anaconda prompt, then open a browser and point to http://localhost:8000/ */
 
-//read in local json file
+//Read in local json file.  Everything is read in as strings
 d3.json("samples.json").then((data) =>{
 
-    //------------------- narrow down json object to samples -------------------
+    //------------------- narrow down json object to samples and metadata -------------------
     var belly_samples = data.samples;
     // get the all samples
     console.log("here are all the samples");
@@ -15,12 +15,12 @@ d3.json("samples.json").then((data) =>{
     console.log("here are all the metadata");
     console.log(metadata);
 
-    /// ----------------Get Test Subject ID No's and populate pull downlist -----------
+    /// ---------------- Get Test Subject ID No's and populate pull downlist -----------
 
     //Get list of subject id's through data.names
     id_list = data.names;
     console.log('here are the names and id');
-    console.log(id_list);
+    console.log(id_list);  //this is a string not a number!!!
 
     //bind id_list to the pulldown menu
     d3.select("#selDataset")
@@ -48,12 +48,6 @@ d3.json("samples.json").then((data) =>{
     // var x =  d3.selectAll("#selDataset").on("change", optionChanged);
 
  
-    // console.log("this is the selected_id to be passed");
-    // console.log(sample_id);
-    // // console.log(sample_id.slice(0,0));
-    // console.log(sample_id.value);
- 
-    // console.log(sample_id[0]);
 
 
 
@@ -70,7 +64,7 @@ d3.json("samples.json").then((data) =>{
 
         //filter sample data based on selectedID
         // var filteredDataMeta = metadata.filter(sample =>sample.id === selectedID);
-        var filteredDataMeta = metadata.filter(meta => meta.id === selectedID);
+        var filteredDataMeta = metadata.filter(meta => meta.id === parseInt(selectedID));
         var filteredDataSample = belly_samples.filter(sample => sample.id === selectedID);
 
         console.log("this is the filtered meta data");
@@ -79,8 +73,23 @@ d3.json("samples.json").then((data) =>{
         console.log("this is the filteredDataSample");
         console.log(filteredDataSample);
 
-
         ///populate the Demographic Info Module
+        d3.select("#sample-metadata")
+            .selectAll("p")
+            .data(filteredDataMeta)
+            .enter()
+            .append("p")
+            // .merge()
+            .html(function(d) {
+                // return `<p>${Object.entries(d)}</p>`
+                return `<p>${Object.keys(d)[0]}:  ${Object.values(d)[0]}</p>
+                        <p>${Object.keys(d)[1]}:  ${Object.values(d)[1]}</p>
+                        <p>${Object.keys(d)[2]}:  ${Object.values(d)[2]}</p>
+                        <p>${Object.keys(d)[3]}:  ${Object.values(d)[3]}</p>
+                        <p>${Object.keys(d)[4]}:  ${Object.values(d)[4]}</p>
+                        <p>${Object.keys(d)[5]}:  ${Object.values(d)[5]}</p>
+                        <p>${Object.keys(d)[6]}:  ${Object.values(d)[6]}</p>`
+            });
 
 
 
@@ -94,38 +103,59 @@ d3.json("samples.json").then((data) =>{
 
 
 
- 
+ //ask justin is map is usually used for an array
         var x_out_ids = filteredDataSample.map(sample => sample.otu_ids)
         console.log("this is x_out_ids");
         console.log(x_out_ids);
 
-        var y_sample_values = filteredDataSample.map(sample => sample.sample_values)
-        console.log("this is y_sample_values");
-        console.log(y_sample_values);
+        var y_sample = filteredDataSample.map(sample => sample.sample_values)
+        console.log("this is y-sample");
+        console.log(y_sample);
+
+        // var x = y_sample.forEach(function(data) {
+        //     data = +data;
+        // });
+        // console.log("this is x");
+        // console.log(x);
+
+        //convert an array of strings into an array of numbers
+        var x = y_sample.map(value => parseInt(value));  //only get the first value
+        console.log("this is x");
+        console.log(x);
+
+        //https://wsvincent.com/javascript-parseint-map/
+        // var y_sample_values = y_sample.map(Number);
+        // var y_sample_values = y_sample.map(function (x){
+        //     return parseInt(x, 10);
+        // });
 
 
-        var trace1 = {
+        // console.log("this is y_sample_values");
+        // console.log(y_sample_values);
+
+
+        var trace = {
             x: x_out_ids,
-            y: y_sample_values,
+            y: y_sample,
             type: "bar",
             orientation: "h"
-        };
-        
-        var data = [trace1];
+           };
+           // 6. Create the data array for our plot
+           var data = [trace];
+           // 7. Define our plot layout
 
-        var layout = {
+           var layout = {
             margin: {
-              l: 10,
-              r: 10,
-              t: 10,
-              b: 10
+              l: 100,
+              r: 100,
+              t: 100,
+              b: 100
             }
            };
            
 
-        var data = [trace1];
-
-        Plotly.newPlot("bar", data, layout)
+           // 8. Plot the chart to a div tag with id "bar-plot"
+           Plotly.newPlot("bar", data, layout);
 
 
         // return selectedID;  As justin about this.  I get an array instead of a value
