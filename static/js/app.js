@@ -60,6 +60,7 @@ d3.json("samples.json").then((data) =>{
         //filter returns results in an ARRAY.  To get to the element in the array, use index [0]
         var filteredDataSample = belly_samples.filter(sample => sample.id === selectedID)[0];
 
+
         console.log("this is the filtered meta data");
         console.log(filteredDataMeta);
 
@@ -147,14 +148,17 @@ d3.json("samples.json").then((data) =>{
 
 
         var otu_ids_all = filteredDataSample.otu_ids;
+        console.log(otu_ids_all);
         var sample_all = filteredDataSample.sample_values;
-       
+        console.log(sample_all);
         var trace1 = {
             x: otu_ids_all,
             y: sample_all,
+            // x:[1,2,3,4,5],
+            // y:[1,2,3,4,5],
             mode: 'markers',
             marker: {
-              size: [sample_all]
+              size: sample_all
             }
           };
     
