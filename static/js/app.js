@@ -1,7 +1,7 @@
 /* Note to self - to run this code on your laptop, set up your local http server
 through anaconda prompt, then open a browser and point to http://localhost:8000/ */
 
-//Read in local json file.  Everything is read in as strings
+//Read in local json file.  
 d3.json("samples.json").then((data) =>{
 
     //------------------- narrow down json object to samples and metadata -------------------
@@ -53,9 +53,11 @@ d3.json("samples.json").then((data) =>{
         console.log(dropdownMenuID); //result is selDtaset
         console.log(selectedID); //result is a number like 940
 
-        //filter sample data based on selectedID
-        // var filteredDataMeta = metadata.filter(sample =>sample.id === selectedID);
+        //filter metadata  based on selectedID
+        //use partInt to convert the selectedID string into a number
         var filteredDataMeta = metadata.filter(meta => meta.id === parseInt(selectedID));
+        //filter sample data based on selectedID
+        //filter returns results in an ARRAY.  To get to the element in the array, use index [0]
         var filteredDataSample = belly_samples.filter(sample => sample.id === selectedID)[0];
 
         console.log("this is the filtered meta data");
@@ -90,50 +92,37 @@ d3.json("samples.json").then((data) =>{
                     <p>${Object.keys(d)[6]}:  ${Object.values(d)[6]}</p>`
         });
 
-        
         // --------------------------------- plot bar chart ------------------------------------
-    
 
-        //ask justin is map is usually used for an array
-        //category
-        var y_out_ids = filteredDataSample.otu_ids
+        //plot the first 10 out_ids on the y axis
+        var y_otu_ids = filteredDataSample.otu_ids.slice(0,10);
+        //convert to strings
+        var y_otu_ids_str = y_otu_ids.map(String);
+        //prepend "OTU"
+        var y_otu_ids_str = y_otu_ids_str.map(i => "otu " + i);
+        //reverse order for descending order
+        var y_otu_ids_str = y_otu_ids_str.reverse()
         console.log("this is y_out_ids");
-        console.log(y_out_ids);
+        console.log(y_otu_ids);
 
-        var x_sample = filteredDataSample.sample_values
+        //plot the first 10 sample values on the x axis
+        var x_sample = filteredDataSample.sample_values.slice(0,10);
+        //reverse order for descending order
+        var x_sample = x_sample.reverse()
         console.log("this is x-sample");
         console.log(x_sample);
 
-        // var x = y_sample.forEach(function(data) {
-        //     data = +data;
-        // });
-        // console.log("this is x");
-        // console.log(x);
-
-        //convert an array of strings into an array of numbers
-        // var x = y_sample.map(value => parseInt(value));  //only get the first value
-        // console.log("this is x");
-        // console.log(x);
-        // console.log("this i s the pyt of x");
-        // console.log(x[0]);
-        // console.log(typeof x[0]);
-        // console.log(y_sample[0]);
-        // console.log(typeof y_sample[0]);
-
-        //https://wsvincent.com/javascript-parseint-map/
-        // var y_sample_values = y_sample.map(Number);
-        // var y_sample_values = y_sample.map(function (x){
-        //     return parseInt(x, 10);
-        // });
-
-
-        // console.log("this is y_sample_values");
-        // console.log(y_sample_values);
-
+        //first 10 otu_labels 
+        var otu_labels = filteredDataSample.otu_labels.slice(0,10);
+        //reverse order for descending order
+        var otu_labels = otu_labels.reverse()
+        console.log("this is otu_labels");
+        console.log(otu_labels);
 
         var trace = {
             x: x_sample,
-            y: y_out_ids,
+            y: y_otu_ids_str,
+            text: otu_labels,
             type: "bar",
             orientation: "h"
            };
@@ -143,40 +132,48 @@ d3.json("samples.json").then((data) =>{
 
            var layout = {
             margin: {
-              l: 50,
-              r: 50,
-              t: 50,
-              b: 50
+              l: 75,
+              r: 5,
+              t: 5,
+              b: 15
             }
            };
            
-
            // 8. Plot the chart to a div tag with id "bar-plot"
            Plotly.newPlot("bar", data, layout);
 
 
-        // return selectedID;  As justin about this.  I get an array instead of a value
+        //--------------------------- plot bubble chart ---------
+
+
+        var otu_ids_all = filteredDataSample.otu_ids;
+        var sample_all = filteredDataSample.sample_values;
+       
+        var trace1 = {
+            x: otu_ids_all,
+            y: sample_all,
+            mode: 'markers',
+            marker: {
+              size: [sample_all]
+            }
+          };
+    
+          var data1 = [trace1];
+          
+          var layout1 = {
+            // title: 'Marker Size',
+            showlegend: false,
+            height: 400,
+            width: 800
+          };
+          
+          Plotly.newPlot("bubble", data1, layout1);
     }
 
- 
-    // optionChanged();
-
- 
 
 }); //end d3.json
 
 
-// ------------- ignore    ----------------   
-// another option to  get data from the pull down menu without node
-    // function optionChanged() {
-    //     //select the dropdown menu
-    //     var dropdownMenu = d3.select("#selDataset");
-    //     //assign the value of the dropdown menu to the a variable
-    //     var get_id = dropdownMenu.property("value");
-    //     console.log("from function optionChanged")
-    //     console.log(get_id)
-    //     return get_id
-    // }
 
 
 
