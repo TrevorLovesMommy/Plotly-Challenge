@@ -145,9 +145,7 @@ d3.json("samples.json").then((data) =>{
 
 
         //--------------------------- plot bubble chart ---------
-
-
-        
+      
         //use otu_ids for the x values
         var otu_ids_all = filteredDataSample.otu_ids;
         console.log(otu_ids_all);
