@@ -40,16 +40,7 @@ d3.json("samples.json").then((data) =>{
     //------------- get demographic info and populate Demographic Info Table ---------------------
 
     //Use D3 to create an event handler
-    //question for justin - do I haveto create thsi event handler.  
-    //when I turn this on, the function optionChaned doesn't get called
-    //Code work when I don't use the event handler and just call the function optionChange
     d3.selectAll("#selDataset").on("change", optionChanged);
-    //question fror justin - this returns an array instead of value
-    // var x =  d3.selectAll("#selDataset").on("change", optionChanged);
-
- 
-
-
 
     function optionChanged() {
         //use D3 to select the dropdown menu
@@ -65,7 +56,7 @@ d3.json("samples.json").then((data) =>{
         //filter sample data based on selectedID
         // var filteredDataMeta = metadata.filter(sample =>sample.id === selectedID);
         var filteredDataMeta = metadata.filter(meta => meta.id === parseInt(selectedID));
-        var filteredDataSample = belly_samples.filter(sample => sample.id === selectedID);
+        var filteredDataSample = belly_samples.filter(sample => sample.id === selectedID)[0];
 
         console.log("this is the filtered meta data");
         console.log(filteredDataMeta);
@@ -73,44 +64,45 @@ d3.json("samples.json").then((data) =>{
         console.log("this is the filteredDataSample");
         console.log(filteredDataSample);
 
-        ///populate the Demographic Info Module
+        // ///populate the Demographic Info Module
+        // d3.select("#sample-metadata")
+        // .selectAll("p")
+        // .data(filteredDataMeta)
+        // .enter()
+        // .append("p")
+        // .html((d,i) => `${Object.keys(d)[i]}:  ${Object.values(d)[i]}`);       
+
+
+        //populate the Demographic Info Module
         d3.select("#sample-metadata")
-            .selectAll("p")
-            .data(filteredDataMeta)
-            .enter()
-            .append("p")
-            // .merge()
-            .html(function(d) {
-                // return `<p>${Object.entries(d)}</p>`
-                return `<p>${Object.keys(d)[0]}:  ${Object.values(d)[0]}</p>
-                        <p>${Object.keys(d)[1]}:  ${Object.values(d)[1]}</p>
-                        <p>${Object.keys(d)[2]}:  ${Object.values(d)[2]}</p>
-                        <p>${Object.keys(d)[3]}:  ${Object.values(d)[3]}</p>
-                        <p>${Object.keys(d)[4]}:  ${Object.values(d)[4]}</p>
-                        <p>${Object.keys(d)[5]}:  ${Object.values(d)[5]}</p>
-                        <p>${Object.keys(d)[6]}:  ${Object.values(d)[6]}</p>`
-            });
+        .html("")
+        .selectAll("p")
+        .data(filteredDataMeta)
+        .enter()
+        .append("p")
+        .html(function(d) {
+            return `<p>${Object.keys(d)[0]}:  ${Object.values(d)[0]}</p>
+                    <p>${Object.keys(d)[1]}:  ${Object.values(d)[1]}</p>
+                    <p>${Object.keys(d)[2]}:  ${Object.values(d)[2]}</p>
+                    <p>${Object.keys(d)[3]}:  ${Object.values(d)[3]}</p>
+                    <p>${Object.keys(d)[4]}:  ${Object.values(d)[4]}</p>
+                    <p>${Object.keys(d)[5]}:  ${Object.values(d)[5]}</p>
+                    <p>${Object.keys(d)[6]}:  ${Object.values(d)[6]}</p>`
+        });
 
-
-
-
-
-
-
-
-        //plot table
+        
+        // --------------------------------- plot bar chart ------------------------------------
     
 
+        //ask justin is map is usually used for an array
+        //category
+        var y_out_ids = filteredDataSample.otu_ids
+        console.log("this is y_out_ids");
+        console.log(y_out_ids);
 
-
- //ask justin is map is usually used for an array
-        var x_out_ids = filteredDataSample.map(sample => sample.otu_ids)
-        console.log("this is x_out_ids");
-        console.log(x_out_ids);
-
-        var y_sample = filteredDataSample.map(sample => sample.sample_values)
-        console.log("this is y-sample");
-        console.log(y_sample);
+        var x_sample = filteredDataSample.sample_values
+        console.log("this is x-sample");
+        console.log(x_sample);
 
         // var x = y_sample.forEach(function(data) {
         //     data = +data;
@@ -119,9 +111,14 @@ d3.json("samples.json").then((data) =>{
         // console.log(x);
 
         //convert an array of strings into an array of numbers
-        var x = y_sample.map(value => parseInt(value));  //only get the first value
-        console.log("this is x");
-        console.log(x);
+        // var x = y_sample.map(value => parseInt(value));  //only get the first value
+        // console.log("this is x");
+        // console.log(x);
+        // console.log("this i s the pyt of x");
+        // console.log(x[0]);
+        // console.log(typeof x[0]);
+        // console.log(y_sample[0]);
+        // console.log(typeof y_sample[0]);
 
         //https://wsvincent.com/javascript-parseint-map/
         // var y_sample_values = y_sample.map(Number);
@@ -135,8 +132,8 @@ d3.json("samples.json").then((data) =>{
 
 
         var trace = {
-            x: x_out_ids,
-            y: y_sample,
+            x: x_sample,
+            y: y_out_ids,
             type: "bar",
             orientation: "h"
            };
@@ -146,10 +143,10 @@ d3.json("samples.json").then((data) =>{
 
            var layout = {
             margin: {
-              l: 100,
-              r: 100,
-              t: 100,
-              b: 100
+              l: 50,
+              r: 50,
+              t: 50,
+              b: 50
             }
            };
            
@@ -162,9 +159,15 @@ d3.json("samples.json").then((data) =>{
     }
 
  
-    optionChanged();
+    // optionChanged();
 
-    // another option to  get data from the pull down menu without node
+ 
+
+}); //end d3.json
+
+
+// ------------- ignore    ----------------   
+// another option to  get data from the pull down menu without node
     // function optionChanged() {
     //     //select the dropdown menu
     //     var dropdownMenu = d3.select("#selDataset");
@@ -174,17 +177,6 @@ d3.json("samples.json").then((data) =>{
     //     console.log(get_id)
     //     return get_id
     // }
-
-    // function filterData()
-
-
-
-
-
-
-}); //end d3.json
-
-
 
 
 
