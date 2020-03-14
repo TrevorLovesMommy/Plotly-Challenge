@@ -147,18 +147,28 @@ d3.json("samples.json").then((data) =>{
         //--------------------------- plot bubble chart ---------
 
 
+        
+        //use otu_ids for the x values
         var otu_ids_all = filteredDataSample.otu_ids;
         console.log(otu_ids_all);
-        var sample_all = filteredDataSample.sample_values;
-        console.log(sample_all);
+        //use sample_values for the y values
+        var sample_values_all = filteredDataSample.sample_values;
+        console.log(sample_values_all);
+        //use otu_labels_all for the text values
+        var otu_labels_all = filteredDataSample.otu_labels;
+        console.log(otu_labels_all);
+
+
+
         var trace1 = {
             x: otu_ids_all,
-            y: sample_all,
-            // x:[1,2,3,4,5],
-            // y:[1,2,3,4,5],
+            y: sample_values_all,
+
             mode: 'markers',
             marker: {
-              size: sample_all
+              size: sample_values_all,
+              color: otu_ids_all,
+              text: otu_labels_all
             }
           };
     
