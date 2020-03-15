@@ -51,7 +51,7 @@ d3.json("samples.json").then((data) =>{
         var selectedID = dropdownMenu.value;
 
         console.log(dropdownMenuID); //result is selDtaset
-        console.log(selectedID); //result is a number like 940
+        console.log(selectedID); //result is a string like 940
 
         //filter metadata  based on selectedID
         //use partInt to convert the selectedID string into a number
@@ -59,7 +59,6 @@ d3.json("samples.json").then((data) =>{
         //filter sample data based on selectedID
         //filter returns results in an ARRAY.  To get to the element in the array, use index [0]
         var filteredDataSample = belly_samples.filter(sample => sample.id === selectedID)[0];
-
 
         console.log("this is the filtered meta data");
         console.log(filteredDataMeta);
@@ -74,7 +73,6 @@ d3.json("samples.json").then((data) =>{
         // .enter()
         // .append("p")
         // .html((d,i) => `${Object.keys(d)[i]}:  ${Object.values(d)[i]}`);       
-
 
         //populate the Demographic Info Module
         d3.select("#sample-metadata")
@@ -95,7 +93,7 @@ d3.json("samples.json").then((data) =>{
 
         // --------------------------------- plot bar chart ------------------------------------
 
-        //plot the first 10 out_ids on the y axis
+        //get the first 10 out_ids on the y axis
         var y_otu_ids = filteredDataSample.otu_ids.slice(0,10);
         //convert to strings
         var y_otu_ids_str = y_otu_ids.map(String);
@@ -106,43 +104,43 @@ d3.json("samples.json").then((data) =>{
         console.log("this is y_out_ids");
         console.log(y_otu_ids);
 
-        //plot the first 10 sample values on the x axis
+        //get the first 10 sample values on the x axis
         var x_sample = filteredDataSample.sample_values.slice(0,10);
         //reverse order for descending order
         var x_sample = x_sample.reverse()
         console.log("this is x-sample");
         console.log(x_sample);
 
-        //first 10 otu_labels 
+        //get first 10 otu_labels 
         var otu_labels = filteredDataSample.otu_labels.slice(0,10);
         //reverse order for descending order
         var otu_labels = otu_labels.reverse()
         console.log("this is otu_labels");
         console.log(otu_labels);
 
+        //create trace
         var trace = {
             x: x_sample,
             y: y_otu_ids_str,
             text: otu_labels,
             type: "bar",
             orientation: "h"
-           };
-           // 6. Create the data array for our plot
-           var data = [trace];
-           // 7. Define our plot layout
+        };
+        // Create the data array for our plot
+        var data = [trace];  
 
-           var layout = {
-            margin: {
-              l: 75,
-              r: 5,
-              t: 5,
-              b: 15
-            }
-           };
+        //Define our plot layout
+        var layout = {
+          margin: {
+            l: 75,
+            r: 5,
+            t: 5,
+            b: 15
+          }
+        };
            
-           // 8. Plot the chart to a div tag with id "bar-plot"
+        //Plot the chart to a div tag with id "bar-plot"
            Plotly.newPlot("bar", data, layout);
-
 
         //--------------------------- plot bubble chart ---------
       
@@ -156,8 +154,6 @@ d3.json("samples.json").then((data) =>{
         var otu_labels_all = filteredDataSample.otu_labels;
         console.log(otu_labels_all);
 
-
-
         var trace1 = {
             x: otu_ids_all,
             y: sample_values_all,
@@ -168,20 +164,19 @@ d3.json("samples.json").then((data) =>{
               color: otu_ids_all,
               text: otu_labels_all
             }
-          };
+        };
     
-          var data1 = [trace1];
+        var data1 = [trace1];
           
-          var layout1 = {
-            // title: 'Marker Size',
-            showlegend: false,
-            height: 400,
-            width: 800
-          };
+        var layout1 = {
+          // title: 'Marker Size',
+          showlegend: false,
+          height: 400,
+          width: 800
+        };
           
-          Plotly.newPlot("bubble", data1, layout1);
+        Plotly.newPlot("bubble", data1, layout1);
     }
-
 
 }); //end d3.json
 
